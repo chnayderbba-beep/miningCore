@@ -1,3 +1,9 @@
+## Vercel deployment note
+
+This build uses one catch-all Serverless Function at `api/[...route].js`; the
+individual API handlers are stored under `lib/handlers/`. Static files are at
+the project root for plain Vercel hosting.
+
 # MineCore
 
 MineCore is a Vercel-compatible cryptocurrency mining application scaffold with server-authoritative accounting, PostgreSQL persistence, secure cookie sessions, payment-review workflows, withdrawal reservation, audit logging, and explicit adapters for real mining, market pricing, payment verification, and blockchain payouts.
