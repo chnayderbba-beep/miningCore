@@ -1,0 +1,2 @@
+const {json}=require("../../lib/http"); const {getPool}=require("../../lib/db"); const {requireUser}=require("../../lib/auth");
+module.exports=async(req,res)=>{const u=await requireUser(req);if(!u)return json(res,401,{error:"Unauthorized"});const id=req.query?.id||String(req.url||"").split("/").pop().split("?")[0];const {rows}=await getPool().query("SELECT * FROM withdrawals WHERE id=$1 AND user_id=$2",[id,u.id]);return rows[0]?json(res,200,{withdrawal:rows[0]}):json(res,404,{error:"Withdrawal not found"});};

@@ -1,0 +1,2 @@
+const {json}=require("../../lib/http"); const {getPool}=require("../../lib/db"); const {requireUser}=require("../../lib/auth");
+module.exports=async(req,res)=>{const u=await requireUser(req);if(!u)return json(res,401,{error:"Unauthorized"});if(u.role!=="admin")return json(res,403,{error:"Forbidden"});const {rows}=await getPool().query("SELECT c.*,u.email,p.name plan_name FROM mining_contracts c JOIN users u ON u.id=c.user_id JOIN plans p ON p.id=c.plan_id ORDER BY c.created_at DESC LIMIT 1000");return json(res,200,{contracts:rows});};

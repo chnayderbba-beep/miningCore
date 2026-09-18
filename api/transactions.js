@@ -1,0 +1,2 @@
+const {json}=require("../lib/http"); const {getPool}=require("../lib/db"); const {requireUser}=require("../lib/auth");
+module.exports=async(req,res)=>{const u=await requireUser(req);if(!u)return json(res,401,{error:"Unauthorized"});const {rows}=await getPool().query("SELECT id,type currency_type,currency,amount::text,reference_type,reference_id,description,created_at FROM wallet_ledger WHERE user_id=$1 ORDER BY created_at DESC LIMIT 500",[u.id]);return json(res,200,{transactions:rows});};

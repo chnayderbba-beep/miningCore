@@ -1,0 +1,9 @@
+async function api(path,opts={}){const r=await fetch(path,{credentials:"include",headers:{"content-type":"application/json",...(opts.headers||{})},...opts});let d={};try{d=await r.json()}catch{}if(!r.ok)throw new Error(d.error||"Request failed");return d}
+async function me(){try{return (await api("/api/auth/me")).user}catch{return null}}
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+async function guard(){const u=await me();if(!u){location.href="/login.html";return null}return u}
+function layout(user,active){return `<div class="shell"><aside class="sidebar"><div class="brand">Mine<span>Core</span></div><nav>${[
+["dashboard.html","Dashboard"],["mining.html","Mining"],["plans.html","Plans"],["orders.html","Orders"],["deposit.html","Deposit"],["withdraw.html","Withdraw"],["transactions.html","Transactions"],["profile.html","Profile"]
+].map(([href,label])=>`<a class="${active===label?"active":""}" href="/${href}">${label}</a>`).join("")}${user?.role==="admin"?`<a class="${active==="Admin"?"active":""}" href="/admin.html">Admin</a>`:""}<a href="#" id="logout">Logout</a></nav></aside><main class="main"><div class="top"><div><span class="muted">Welcome</span><h2 style="margin:4px 0">${esc(user.full_name)}</h2></div><span class="badge">${esc(user.role)}</span></div><div id="page"></div></main></div>`}
+async function boot(active,renderer){const u=await guard();if(!u)return;document.body.innerHTML=layout(u,active);document.getElementById("logout").onclick=async e=>{e.preventDefault();await api("/api/auth/logout",{method:"POST"});location.href="/index.html"};await renderer(document.getElementById("page"),u)}
+function money(n){return Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
