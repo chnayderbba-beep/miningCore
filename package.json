@@ -2,7 +2,7 @@
   "name": "minecore",
   "version": "1.0.0",
   "private": true,
-  "engines": { "node": "24.x" },
+  "engines": { "node": ">=20" },
   "scripts": {
     "dev": "vercel dev",
     "migrate": "node scripts/migrate.js",
